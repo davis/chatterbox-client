@@ -7,17 +7,14 @@ var moment = moment;
 // YOUR CODE HERE:
 var app = {
 
+  // initializes messages, chatrooms, and users to blank arrays/objects
   init: function() {
-    this.activeChatRoom;
-    this.allMessages = [];
-    this.chatRooms = {};
-    this.friends = {};
-    this.lastRefresh = 0;
-    this.server = 'something';
-
-    this.fetch();
+    this.allMessages = {};
+    this.allChatRooms = {};
+    this.allUsers = {};
   },
 
+  // fetch should pull last 100 msgs from server
   fetch: function() {
     $.ajax({
       url: 'https://api.parse.com/1/classes/chatterbox',
@@ -26,17 +23,7 @@ var app = {
       },
       success: function (data) {
         console.log('chatterbox: Successfully fetched messages');
-        for(var i = data.results.length-1; i >= 0; i--){
-          var m = data.results[i];
-          var date = new Date(m.createdAt);
-          if (date > app.lastRefresh){
-            app.allMessages.push(m);
-            app.chatRooms[m.roomname] = true;
-          }
-        }
-        app.render(app.allMessages);
-        app.renderChatRooms();
-        app.lastRefresh = Date.now();
+        app.organize.call(app, data.results);
       },
       error: function (data) {
         console.error('chatterbox: Failed to fetch messages');
@@ -44,7 +31,33 @@ var app = {
     });
   },
 
-  render: function(data) {
+  // organize takes the messages array fetch returns and loads it into the users and chatrooms
+  organize: function(messages) {
+    // for each msg
+    for(var i = 0; i < messages.length; i++) {
+      var m = messages[i];
+      // check if obj id is in all messages
+      if(!this.allMessages[m.objectId]) {
+        // if we don't have the user, create new user
+        if(!this.allUsers[m.username]) {
+          var user = new User(m.username);
+          this.allUsers[m.username] = user;
+        }
+        // if we don't have the chatroom, create new chatroom
+        if(!this.allChatRooms[m.roomname]) {
+          var chatroom = new Chatroom(m.roomname);
+          this.allChatRooms[m.roomname] = chatroom;
+        }
+        // push to both user and chatroom
+        var message = new Message(m.text, m.createdAt, m.objectId);
+        this.allUsers[m.username].addMessage(message);
+        this.allChatRooms[m.roomname].addMessage(message);
+        this.allMessages[m.objectId] = true;
+      }
+    }
+  },
+
+  render: function() {
     data = data || app.allMessages;
     $('.messages').html('');
     for(var i = 0; i < data.length; i++){
@@ -65,11 +78,6 @@ var app = {
   },
 
   send: function(message) {
-    message = message || {
-      'username': 'davis',
-      'text': 'hats on cats',
-      'roomname': 'lobby'
-    };
 
     $.ajax({
       // always use this url
