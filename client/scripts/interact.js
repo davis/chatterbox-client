@@ -12,7 +12,7 @@ $(document).ready(function() {
     var message = {
       username: username,
       text: $text,
-      roomname: 'lobby'
+      roomname: app.activeChatRoom || 'lobby'
     };
     app.send(message);
     $('.composeMessage').val('');
@@ -36,7 +36,6 @@ $(document).ready(function() {
     var newFriend = $(this).text();
     if (!app.friends[newFriend]) { // if friend is not in friends array
       app.friends[newFriend] = true;
-      // app.makeBold();
       app.render();
     }
   });
