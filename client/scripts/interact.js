@@ -32,6 +32,27 @@ $(document).ready(function() {
     }
   });
 
+  $('body').on('click', '.username', function() {
+    var newFriend = $(this).text();
+    if (!app.friends[newFriend]) { // if friend is not in friends array
+      app.friends[newFriend] = true;
+      // app.makeBold();
+      app.render();
+    }
+  });
+
+  $('body').on('click', '.chatroom', function() {
+    app.activeChatRoom = $(this).text();
+    $(this).addClass('bold');
+    app.render();
+  });
+
+  $('.title').click(function(){
+    app.activeChatRoom = undefined;
+    app.render();
+    app.renderChatRoom();
+  });
+
   setInterval(function() {
     app.fetch();
   }, 2000);
