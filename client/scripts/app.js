@@ -29,11 +29,9 @@ var app = {
       contentType: 'application/json',
       success: function (data) {
         console.log('chatterbox: Message sent');
-        console.dir(data);
-        console.log(JSON.stringify(message));
       },
       complete: function (data) {
-        console.log('complete')
+        console.log('complete');
       },
       error: function (data) {
         // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -46,7 +44,6 @@ var app = {
       url: 'https://api.parse.com/1/classes/chatterbox?order=-createdAt',
       success: function (data) {
         console.log('chatterbox: Successfully fetched messages');
-        console.log(data);
         app.render(data);
         app.lastRefresh = Date.now();
       },
@@ -61,7 +58,6 @@ var app = {
       var m = data.results[i];
       var date = new Date(m.createdAt);
       if (date > app.lastRefresh){
-        console.log(m.username, m.text);
         $('.messages').prepend(app.template(m));
       }
     }
@@ -70,7 +66,7 @@ var app = {
   template: function(m) {
     var $message = $('<div class="message"></div>');
     var date = moment(m.createdAt).fromNow();
-    $message.text('(' + date + ')' + m.username + ': ' + m.text + ' (' + m.objectId + ')');
+    $message.text('(' + date + ') ' + m.username + ': ' + m.text + ' (' + m.objectId + ')');
     return $message;
   }
 };
