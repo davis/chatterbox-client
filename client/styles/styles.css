@@ -5,6 +5,10 @@ body {
     font-family: arial, sans-serif;
 }
 
+a, u {
+    text-decoration: none;
+}
+
 #main {
     width: 500px;
     margin: auto;
@@ -13,6 +17,7 @@ body {
     padding: 50px 60px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
+    display:inline-block;
 }
 
 #main h1 {
@@ -46,6 +51,18 @@ body {
     line-height: 13px;
 }
 
+#chatroomlist {
+    width:300px;
+    margin: auto;
+    text-align: left;
+    background: white;
+    padding: 50px 60px;
+    border: solid #ddd;
+    border-width: 0 1px 1px 1px;
+    display:inline-block;
+}
+
+
 form {
     padding: 20px;
     padding-left: 0;
@@ -75,6 +92,10 @@ form input[type=text] {
 
 .chat:hover {
     background-color: #ddd;
+}
+
+.bold{
+    font-weight: bold;
 }
 
 .spinner {
