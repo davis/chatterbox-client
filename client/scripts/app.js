@@ -40,33 +40,26 @@ var app = {
       if(!this.allMessages[m.objectId]) {
         // if we don't have the user, create new user
         if(!this.allUsers[m.username]) {
-          var user = new User(m.username);
-          this.allUsers[m.username] = user;
+          this.allUsers[m.username] = 1;
+        } else {
+          this.allUsers[m.username]++;
         }
         // if we don't have the chatroom, create new chatroom
         if(!this.allChatRooms[m.roomname]) {
-          var chatroom = new Chatroom(m.roomname);
-          this.allChatRooms[m.roomname] = chatroom;
+          this.allChatRooms[m.roomname] = 1;
+        } else {
+          this.allChatRooms[m.roomname]++;
         }
         // push to both user and chatroom
-        var message = new Message(m.text, m.createdAt, m.objectId);
-        this.allUsers[m.username].addMessage(message);
-        this.allChatRooms[m.roomname].addMessage(message);
+        var message = new Message(m.text, m.createdAt, m.objectId, m.username, m.roomname);
         this.allMessages[m.objectId] = true;
+        app.render(message);
       }
     }
   },
 
-  render: function() {
-    data = data || app.allMessages;
-    $('.messages').html('');
-    for(var i = 0; i < data.length; i++){
-      var m = data[i];
-      if (m.roomname === app.activeChatRoom || app.activeChatRoom === undefined) {
-        var isFriend = app.friends[m.username];
-        $('.messages').prepend(app.template(m, isFriend));
-      }
-    }
+  render: function(message) {
+    $('.message-list').prepend($(message.templated()));
   },
 
   renderChatRooms: function() {
@@ -78,7 +71,6 @@ var app = {
   },
 
   send: function(message) {
-
     $.ajax({
       // always use this url
       url: 'https://api.parse.com/1/classes/chatterbox',
