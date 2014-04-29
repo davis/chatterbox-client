@@ -5,14 +5,64 @@ var moment = moment;
 // end
 
 // YOUR CODE HERE:
-
-
 var app = {
-  init : function() {
+
+  init: function() {
+    this.activeChatRoom;
+    this.allMessages = [];
+    this.chatRooms = {};
+    this.friends = {};
+    this.lastRefresh = 0;
     this.server = 'something';
+
+    this.fetch();
   },
 
-  lastRefresh: 0,
+  fetch: function() {
+    $.ajax({
+      url: 'https://api.parse.com/1/classes/chatterbox',
+      data: {
+        order: '-createdAt'
+      },
+      success: function (data) {
+        console.log('chatterbox: Successfully fetched messages');
+        for(var i = data.results.length-1; i >= 0; i--){
+          var m = data.results[i];
+          var date = new Date(m.createdAt);
+          if (date > app.lastRefresh){
+            app.allMessages.push(m);
+            app.chatRooms[m.roomname] = true;
+          }
+        }
+        app.render(app.allMessages);
+        app.renderChatRooms();
+        app.lastRefresh = Date.now();
+      },
+      error: function (data) {
+        console.error('chatterbox: Failed to fetch messages');
+      }
+    });
+  },
+
+  render: function(data) {
+    data = data || app.allMessages;
+    $('.messages').html('');
+    for(var i = 0; i < data.length; i++){
+      var m = data[i];
+      if (m.roomname === app.activeChatRoom || app.activeChatRoom === undefined) {
+        var isFriend = app.friends[m.username];
+        $('.messages').prepend(app.template(m, isFriend));
+      }
+    }
+  },
+
+  renderChatRooms: function() {
+    $('#chatroomlist').html('');
+    for(var chatroom in app.chatRooms) {
+      var $chatroom = $('<li><a href="#" class="chatroom">' + chatroom + '</a></li>');
+      $('#chatroomlist').append($chatroom);
+    }
+  },
 
   send: function(message) {
     message = message || {
@@ -39,34 +89,20 @@ var app = {
       }
     });
   },
-  fetch: function() {
-    $.ajax({
-      url: 'https://api.parse.com/1/classes/chatterbox?order=-createdAt',
-      success: function (data) {
-        console.log('chatterbox: Successfully fetched messages');
-        app.render(data);
-        app.lastRefresh = Date.now();
-      },
-      error: function (data) {
-        console.error('chatterbox: Failed to fetch messages');
-      }
-    });
-  },
 
-  render: function(data) {
-    for(var i = data.results.length-1; i >= 0; i--){
-      var m = data.results[i];
-      var date = new Date(m.createdAt);
-      if (date > app.lastRefresh){
-        $('.messages').prepend(app.template(m));
-      }
+  template: function(m, isFriend) {
+    if(isFriend) {
+      var $message = $('<div class="bold"></div>');
+    } else {
+      var $message = $('<div class="message"></div>');
     }
-  },
-
-  template: function(m) {
-    var $message = $('<div class="message"></div>');
+    var $user = $('<a href ="#" class="username"></a>');
+    $user.text(m.username);
     var date = moment(m.createdAt).fromNow();
-    $message.text('(' + date + ') ' + m.username + ': ' + m.text + ' (' + m.objectId + ')');
-    return $message;
+    $message.text(': ' + m.text + '(' + date + ')' + ' in ' + m.roomname);
+    return $message.prepend($user);
   }
 };
+
+
+app.init();
