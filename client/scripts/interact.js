@@ -11,6 +11,7 @@ $(function(){
     event.preventDefault();
     app.allUsers[$(this).text()] = !app.allUsers[$(this).text()];
     app.renderRoom();
+    app.renderFriendList();
   });
 
   setInterval(function() {

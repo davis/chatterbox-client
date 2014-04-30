@@ -23,28 +23,35 @@
   <body>
     <div class="container" id="main">
       <!-- Your HTML goes here! -->
-      <div class="col-md-3" id="chatroomlist">
-        <h1>chatrooms</h1>
-        <!-- <form role="form"> -->
-          <div class="form-group">
-            <!-- <label for="chatroom">Chatroom name</label> -->
-            <input type="text" class="form-control createNewRoomName" id="chatroom" placeholder="">
+      <div class="col-md-3">
+        <div class="col-md-12 chatroomlist" >
+          <h1>chatrooms</h1>
+          <!-- <form role="form"> -->
+            <div class="form-group">
+              <!-- <label for="chatroom">Chatroom name</label> -->
+              <input type="text" class="form-control createNewRoomName" id="chatroom" placeholder="">
+            </div>
+            <button type="button" class="btn btn- createNewRoomButton">create chatroom</button>
+          <!-- </form> -->
+        </div>
+        <div class="col-md-12 chatroomlist">
+          <h1>active room</h1>
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" id="chatroom-list-button" data-toggle="dropdown">
+              lobby <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <!-- chatrooms go here -->
+            </ul>
           </div>
-          <button type="button" class="btn createNewRoomButton">create chatroom</button>
-        <!-- </form> -->
-        <hr/>
-        <h1>active room</h1>
-        <div class="btn-group">
-          <button type="button" class="btn btn-default dropdown-toggle" id="chatroom-list-button" data-toggle="dropdown">
-            lobby <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <!-- chatrooms go here -->
-          </ul>
+        </div>
+        <div class="col-md-12 chatroomlist">
+          <h1>friends</h1>
+          <ul class="friends list-group"></ul>
         </div>
       </div>
-      <div class="col-md-9">
-        <h1><a class="title" href="">chatterbox</a></h1>
+      <div class="col-md-8">
+        <h1><a class="title" href="">chatter<em>box</em></a></h1>
         <!-- <form role="form"> -->
           <div class="form-group">
             <div class="input-group">

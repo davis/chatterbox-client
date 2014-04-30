@@ -62,15 +62,8 @@ var app = {
   renderMessage: function(message) {
     $('.message-list').prepend($(message.templated())); // prepend to dom
     app.renderRoom();
-    // if (message.chatroom === app.activeChatRoom) {
-    //   $('#'+message.objectId).removeClass('hidden');
-    // // else (unless no room is selected) add hidden class
-    // } else if (app.activeChatRoom !== null) {
-    //   $('#'+message.objectId).addClass('hidden');
-    // }
   },
 
-// Fix when no room is selected, show everything
   renderRoom: function(){
     for(var key in app.allMessages) {
       var needsRendering = false;
@@ -97,9 +90,16 @@ var app = {
   },
 
   renderChatRoomList: function(roomname) {
-
     $('.dropdown-menu').append('<li><a class="chatroom-link">' + roomname + '</a></li>'); //template needs to go into a class
+  },
 
+  renderFriendList: function() {
+    $('.friends').html('');
+    for(var friend in app.allUsers) {
+      if(app.allUsers[friend]) {
+        $('.friends').append('<a class="list-group-item friend-link">' + friend + '</a>');
+      }
+    }
   },
 
   send: function(message) {
